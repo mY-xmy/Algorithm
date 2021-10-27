@@ -4,7 +4,7 @@
 @FilePath: BinarySearch.py
 @Author: Xu Mingyu
 @Date: 2021-10-27 15:05:59
-@LastEditTime: 2021-10-27 15:16:12
+@LastEditTime: 2021-10-27 15:21:50
 @Description: 
 @Copyright 2021 Xu Mingyu, All Rights Reserved. 
 """
@@ -30,7 +30,7 @@ def BinarySearch(nums, target):
 
 def SearchLeftBound(nums, target):
     """
-    @description: 
+    @description: 有序数组中查找目标值左边界
     @param {*} nums
     @param {*} target
     @return {*}
@@ -50,7 +50,7 @@ def SearchLeftBound(nums, target):
 
 def searchRightBound(nums, target):
     """
-    @description: 
+    @description: 有序数组中查找目标值右边界
     @param {*} nums
     @param {*} target
     @return {*}
