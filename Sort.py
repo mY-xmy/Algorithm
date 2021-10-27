@@ -4,7 +4,7 @@
 @FilePath: Sort.py
 @Author: Xu Mingyu
 @Date: 2021-10-27 15:25:35
-@LastEditTime: 2021-10-27 16:16:21
+@LastEditTime: 2021-10-27 16:17:58
 @Description: 
 @Copyright 2021 Xu Mingyu, All Rights Reserved. 
 """
@@ -92,11 +92,6 @@ def MergeSort(nums):
     merge_sort(nums, left, right)
 
 def main():
-    """
-    @description: 
-    @param {*}
-    @return {*}
-    """
     nums = [2,0,2,1,1,0]
     QuickSort(nums)
     print("Result of QuickSort:", nums)
