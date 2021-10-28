@@ -4,7 +4,7 @@
 @FilePath: Structure.py
 @Author: Xu Mingyu
 @Date: 2021-10-28 14:31:01
-@LastEditTime: 2021-10-28 14:56:26
+@LastEditTime: 2021-10-28 14:57:44
 @Description: 
 @Copyright 2021 Xu Mingyu, All Rights Reserved. 
 """
@@ -16,9 +16,20 @@ class UnionFindSet:
         self.parent = list(range(n))
 
     def union(self, index1: int, index2: int):
+        """
+        @description: 合并
+        @param {int} index1
+        @param {int} index2
+        @return {*}
+        """
         self.parent[self.find(index2)] = self.find(index1)
 
     def find(self, index: int) -> int:
+        """
+        @description: 查询
+        @param {int} index
+        @return {*}
+        """
         if self.parent[index] != index:
             self.parent[index] = self.find(self.parent[index])
         return self.parent[index]
