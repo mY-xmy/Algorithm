@@ -4,7 +4,7 @@
 @FilePath: GraphAlgo.py
 @Author: Xu Mingyu
 @Date: 2021-10-27 23:21:11
-@LastEditTime: 2021-10-28 11:30:52
+@LastEditTime: 2021-10-28 13:23:30
 @Description: 
 @Copyright 2021 Xu Mingyu, All Rights Reserved. 
 """
@@ -98,7 +98,48 @@ def BellmanFord(graph: Dict[int, Dict[int, float]], src: int, dst: Optional[int]
                 raise ValueError("Error: There exists negative cycle in graph!")
     
     return dist[dst] if dst is not None else dist
+
+def isBipartite(graph: List[List[int]]) -> bool:
+    """
+    @description: 判断二分图
+    @param {List} graph
+    @return {*}
+    """
+    def bfs(src):
+        nonlocal is_bipartite
+        queue = deque()
+        queue.append(src)
+        color[src] = True
+        while queue:
+            if not is_bipartite:
+                break
+            u = queue.popleft()
+            for v in graph[u]:
+                if not visited[v]:
+                    color[v] = not color[u]
+                    visited[v] = True
+                    queue.append(v)
+                else:
+                    if color[u] == color[v]:
+                        is_bipartite = False
+                        break
     
+    num_vertex = len(graph)
+    visited = [False] * num_vertex
+    color = [True] * num_vertex # 双色
+    is_bipartite = True
+    for i in range(num_vertex):
+        if not is_bipartite:
+            break
+        if not visited[i]:
+            bfs(i)
+                
+    return is_bipartite
+                
+
+
+
+
 
 
 def main():
