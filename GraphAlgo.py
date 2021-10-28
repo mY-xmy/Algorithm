@@ -4,13 +4,14 @@
 @FilePath: GraphAlgo.py
 @Author: Xu Mingyu
 @Date: 2021-10-27 23:21:11
-@LastEditTime: 2021-10-28 01:04:06
+@LastEditTime: 2021-10-28 11:30:52
 @Description: 
 @Copyright 2021 Xu Mingyu, All Rights Reserved. 
 """
 
-from typing import List, Tuple, Dict
+from typing import List, Tuple, Dict, Optional
 from queue import PriorityQueue
+from collections import deque
 
 def TopologicalSort(graph: List[List[int]]):
     """
@@ -38,7 +39,7 @@ def TopologicalSort(graph: List[List[int]]):
         print("Error: there exists circle in graph!")
         return False
 
-def Dijkstra(graph: List[List[int]], weight: Dict[int, Dict[int, float]], src: int, dst: int):
+def Dijkstra(graph: Dict[int, Dict[int, float]], src: int, dst: Optional[int] = None):
     """
     @description: Dijkstra(优先队列优化)
     @param {List[List[int]]} graph
@@ -57,22 +58,51 @@ def Dijkstra(graph: List[List[int]], weight: Dict[int, Dict[int, float]], src: i
     while not pq.empty():
         u = pq.get()[1]
         visited[u] = True
-        if u == dst: # 终止条件
+        if dst is not None and u == dst: # 终止条件
             return dist[u]
         for v in graph[u]:
             if visited[v]:
                 continue
-            if u not in weight or v not in weight[u]:
-                print("Error: Graph inconsistent with Weight!")
-                return
-            if dist[v] > dist[u] + weight[u][v]:
-                dist[v] = dist[u] + weight[u][v]
+            if dist[v] > dist[u] + graph[u][v]:
+                dist[v] = dist[u] + graph[u][v]
                 pq.put((dist[v], v))
     
-    return dist[dst]
+    return dist[dst] if dst is not None else dist
+
+def BellmanFord(graph: Dict[int, Dict[int, float]], src: int, dst: Optional[int] = None):
+    num_vertex = len(graph)
+    dist = [float("inf")] * num_vertex
+    visited = [False] * num_vertex
+    dist[src] = 0
+    queue = deque()
+    queue.append(src)
+    visited[src] = True
+
+    for _ in range(num_vertex-1):
+        if not queue:
+            break
+        n = len(queue)
+        for i in range(n):
+            u = queue.popleft()
+            visited[u] = False
+            for v in graph[u]:
+                if dist[v] > dist[u] + graph[u][v]:
+                    dist[v] = dist[u] + graph[u][v]
+                    if not visited[v]:
+                        queue.append(v)
+                        visited[v] = True
+    
+    for u in graph:
+        for v in graph[u]:
+            if dist[v] > dist[u] + graph[u][v]:
+                raise ValueError("Error: There exists negative cycle in graph!")
+    
+    return dist[dst] if dst is not None else dist
+    
 
 
 def main():
+    """
     G = [
         [1,5],
         [2,3,5],
@@ -83,6 +113,27 @@ def main():
     ]
     print("Original Graph:", G)
     print("Result of Topological Sort:", TopologicalSort(G))
+    """
+    non_negative_graph = {
+        0: {1: 3, 2: 2, 3: 4},
+        1: {2: 4},
+        2: {3: 1},
+        3: {}
+    }
+    negative_graph = {
+        0: {1: -1, 2:  4},
+        1: {2:  2, 3:  3, 4:  2},
+        2: {},
+        3: {1:  3, 2:  5},
+        4: {3: -3}
+    }
+    print("Original Non-negative Graph:", non_negative_graph)
+    print("Result of Dijkstra:", Dijkstra(non_negative_graph, 0))
+    print("Result of Bellman-Ford:", BellmanFord(non_negative_graph, 0))
+
+    print("Original Negative Graph:", negative_graph)
+    print("Result of Dijkstra:", Dijkstra(negative_graph, 0))
+    print("Result of Bellman-Ford:", BellmanFord(negative_graph, 0))
 
 if __name__ == "__main__":
     main()
