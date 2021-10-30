@@ -4,7 +4,7 @@
 @FilePath: Structure.py
 @Author: Xu Mingyu
 @Date: 2021-10-28 14:31:01
-@LastEditTime: 2021-10-30 22:45:06
+@LastEditTime: 2021-10-30 22:46:41
 @Description: 
 @Copyright 2021 Xu Mingyu, All Rights Reserved. 
 """
@@ -230,7 +230,7 @@ class BTree:
         if self.right:
             right = self.right.postorder()
         return left + right + [self.val]
-
+        
     def levelorder(self):
         res = []
         queue = deque()
