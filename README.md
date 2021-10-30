@@ -17,6 +17,12 @@ A Python module of common algorithms and data structure.
 ### LFU Cache
 > class LFUCache
 
+### 二叉树
+> class BTree
+
+### 线段树
+> class SegmentTree
+
 ## 2. GraphAlgo
 ### 拓扑排序
 > func TopologicalSort
