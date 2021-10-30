@@ -4,12 +4,11 @@
 @FilePath: Structure.py
 @Author: Xu Mingyu
 @Date: 2021-10-28 14:31:01
-@LastEditTime: 2021-10-30 21:06:23
+@LastEditTime: 2021-10-30 22:41:12
 @Description: 
 @Copyright 2021 Xu Mingyu, All Rights Reserved. 
 """
-from collections import defaultdict
-import collections
+from collections import defaultdict, deque
 
 class UnionFindSet:
     """
@@ -197,3 +196,60 @@ class LFUCache:
         self.freq[key] += 1
         if freq == self.minFreq and self.cache[freq].head.next == self.cache[freq].tail:
             self.minFreq += 1
+
+
+class BTree:
+    """
+    Binary Tree
+    """
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+    def preorder(self):
+        left, right = [], []
+        if self.left:
+            left = self.left.preorder()
+        if self.right:
+            right = self.right.preorder()
+        return [self.val] + left + right
+
+    def inorder(self):
+        left, right = [], []
+        if self.left:
+            left = self.left.inorder()
+        if self.right:
+            right = self.right.inorder()
+        return left + [self.val] + right
+    
+    def postorder(self):
+        left, right = [], []
+        if self.left:
+            left = self.left.postorder()
+        if self.right:
+            right = self.right.postorder()
+        return left + right + [self.val]
+    def levelorder(self):
+        res = []
+        queue = deque()
+        queue.append(self)
+        while queue:
+            node = queue.popleft()
+            res.append(node.val)
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+        return res
+    
+def create_BTree(nums):
+    def recur(index):
+        if index >= len(nums) or nums[index] is None:
+            return None
+        root = BTree(nums[index])
+        root.left = recur(2 * index + 1)
+        root.right = recur(2 * index + 2)
+        return root
+
+    return recur(0)
