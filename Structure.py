@@ -4,10 +4,13 @@
 @FilePath: Structure.py
 @Author: Xu Mingyu
 @Date: 2021-10-28 14:31:01
-@LastEditTime: 2021-10-30 19:50:17
+@LastEditTime: 2021-10-30 21:06:23
 @Description: 
 @Copyright 2021 Xu Mingyu, All Rights Reserved. 
 """
+from collections import defaultdict
+import collections
+
 class UnionFindSet:
     """
     UnionFindSet
@@ -100,14 +103,15 @@ class DeLinkedList:
         self.length -= 1
         return node
 
-class LRUCache():
+class LRUCache:
     """
     Least Recently Used Cache
-     - get(key): 获取数据. 如果密钥 (key) 存在于缓存中，则获取密钥的值（总是正数），否则返回 -1。
-     - put(key, value): 写入数据. 如果密钥不存在，则写入其数据值。当缓存容量达到上限时，它应该在写入新数据之前删除最近最少使用的数据值，从而为新的数据值留出空间。
-
+    - get(key): 获取数据. 如果密钥 (key) 存在于缓存中，则获取密钥的值（总是正数），否则返回 -1。
+    - put(key, value): 写入数据. 如果密钥不存在，则写入其数据值。当缓存容量达到上限时，它应该在写入新数据之前删除最近最少使用的数据值，从而为新的数据值留出空间。
     """
     def __init__(self, capacity: int):
+        if capacity < 0:
+            raise ValueError("capacity must be non negative")
         self.capacity = capacity
         self.size = 0
         self.map = dict()
@@ -121,6 +125,9 @@ class LRUCache():
         return node.value
 
     def put(self, key: int, value: int) -> None:
+        if not self.capacity:
+            return
+            
         if key in self.map:
             node = self.map[key]
             node.value = value
@@ -139,4 +146,54 @@ class LRUCache():
         node = self.cache.removeNode(node)
         self.cache.insertNode(node, index=0)
 
-        
+class LFUCache:
+    """
+    Least Frequently Used Cache
+    - get(key): 获取数据. 如果密钥 (key) 存在于缓存中，则获取密钥的值（总是正数），否则返回 -1。
+    - put(key, value): 写入数据. 如果密钥不存在，则写入其数据值。当缓存容量达到上限时，它应该在写入新数据之前删除最不经常使用使用/(最近最久未使用)的项，从而为新的数据值留出空间。
+    """
+    def __init__(self, capacity: int): 
+        if capacity < 0:
+            raise ValueError("capacity must be non negative")
+        self.capacity = capacity
+        self.size = 0
+        self.minFreq = 0
+        self.map = dict()
+        self.freq = dict()
+        self.cache = defaultdict(DeLinkedList)
+    
+    def get(self, key: int) -> int:
+        if key not in self.map:
+            return -1
+        self.makeRecently(key)
+        node = self.map[key]
+        return node.value
+
+    def put(self, key: int, value: int) -> None:
+        if not self.capacity:
+            return
+
+        if key in self.map:
+            node = self.map[key]
+            node.value = value
+            self.makeRecently(key)
+        else:
+            if self.size >= self.capacity:
+                node = self.cache[self.minFreq].removeNode(self.cache[self.minFreq].tail.prev)
+                self.map.pop(node.key)
+                self.freq.pop(node.key)
+                self.size -= 1
+            node = DeLinkedNode(key=key, value=value)
+            self.map[key] = node
+            self.freq[key] = 1
+            self.cache[1].insertNode(node, index=0)
+            self.size += 1
+            self.minFreq = 1
+    
+    def makeRecently(self, key: int) -> None:
+        freq, node = self.freq[key], self.map[key]
+        node = self.cache[freq].removeNode(node)
+        self.cache[freq+1].insertNode(node, index=0)
+        self.freq[key] += 1
+        if freq == self.minFreq and self.cache[freq].head.next == self.cache[freq].tail:
+            self.minFreq += 1
