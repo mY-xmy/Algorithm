@@ -4,7 +4,7 @@
 @FilePath: ML.py
 @Author: Xu Mingyu
 @Date: 2021-11-03 23:21:55
-@LastEditTime: 2021-11-04 22:41:55
+@LastEditTime: 2021-11-04 22:59:04
 @Description: 
 @Copyright 2021 Xu Mingyu, All Rights Reserved. 
 """
@@ -34,7 +34,7 @@ def convolution(inputs, filters, padding=(0,0), stride=(1,1)):
     return output
 
     
-def convolution_backword(d_output, input, filter, stride=(1,1)):
+def convolution_backword(d_output, input, filters, padding=(0,0), stride=(1,1)):
     """
     @description: 
     @param {*} d_output: size(D, H, W)
@@ -45,8 +45,8 @@ def convolution_backword(d_output, input, filter, stride=(1,1)):
     @return {*}
     """
     H, W = d_output.shape
-    D, C, h, w = filter.shape
-    grad = np.zeros(filter.shape)
+    D, C, h, w = filters.shape
+    grad = np.zeros(filters.shape)
     d_output = np.expand_dims(d_output, axis=1) # size(D, 1, H, W)
     for i in range(h):
         for j in range(w):
